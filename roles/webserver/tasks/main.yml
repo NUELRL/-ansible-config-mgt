@@ -1,0 +1,37 @@
+---
+- name: install apache
+  become: true
+  yum:
+    name: httpd
+    state: present
+
+- name: install git
+  become: true
+  yum:
+    name: git
+    state: present
+
+- name: clone repo
+  become: true
+  git:
+    repo: https://github.com/NUELRL/tooling.git
+    dest: /var/www/html
+    force: yes
+
+- name: move content up
+  become: true
+  command: cp -r /var/www/html/html/ /var/www/
+
+- name: start httpd
+  become: true
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+
+- name: remove extra folder
+  become: true
+  file:
+    path: /var/www/html/html
+    state: absent
+# tasks file for webserver
